@@ -1,5 +1,7 @@
 # read moodle skill
 
+Website: https://forrest404.github.io/read-moodle-skill/
+
 Ask Claude about your Moodle: what's due, what an assignment actually asks for, this week's readings, your grades and feedback. It can also write you a daily briefing and turn your deadlines into a plan in your calendar.
 
 It reads Moodle through Moodle's own API (the same one the official Moodle app uses), so there's no browser automation. It only reads: it can't submit, post or change anything.
