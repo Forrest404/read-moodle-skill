@@ -686,7 +686,7 @@ def cmd_today(_):
 # ---------- setup ----------
 
 APP = Path.home() / "Applications/MoodleKey.app"
-SKILLS = Path.home() / ".claude/skills"
+SKILL_DIRS = {"Claude Code": Path.home() / ".claude/skills", "Codex": Path.home() / ".agents/skills"}
 
 
 def keychain_token():
@@ -740,9 +740,10 @@ def cmd_doctor(_):
     check(sys.version_info >= (3, 9), f"Python {sys.version.split()[0]}", "Python 3.9 or newer is needed.")
     check(CONFIG_FILE.exists(), f"config.json found, site {SITE}", "config.json missing: run ./install.sh")
     check(APP.exists(), "MoodleKey.app installed", "MoodleKey.app missing: run ./install.sh")
-    skill = SKILLS / "read-moodle/SKILL.md"
     short = "~" + str(HOME)[len(str(Path.home())):] if str(HOME).startswith(str(Path.home())) else str(HOME)
-    check(skill.exists() and f"{short}/moodle.py" in skill.read_text(), "skills installed in ~/.claude/skills",
+    agents = [name for name, d in SKILL_DIRS.items()
+              if (d / "read-moodle/SKILL.md").exists() and f"{short}/moodle.py" in (d / "read-moodle/SKILL.md").read_text()]
+    check(bool(agents), "skills installed for " + " and ".join(agents),
           "skills not installed for this folder: run ./install.sh")
     tok_ = keychain_token()
     check(bool(tok_), "Moodle key found in Keychain", "no Moodle key: run `python3 -I moodle.py login`")

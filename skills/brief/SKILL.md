@@ -6,7 +6,9 @@ disable-model-invocation: true
 ---
 <!-- read-moodle-skill -->
 
-Follow the Rules in `~/.claude/skills/read-moodle/SKILL.md` (read it if it isn't already in context).
+If `$ARGUMENTS` appears below literally (Codex doesn't fill it in), use whatever the user typed after the command instead.
+
+Follow the Rules in `{{SKILLS}}/read-moodle/SKILL.md` (read it if it isn't already in context).
 
 Assignment: `$ARGUMENTS`. If it's empty, run `python3 -I {{DIR}}/moodle.py assignments` and ask which one.
 

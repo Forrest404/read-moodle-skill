@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>read moodle skill</title>
-<meta name="description" content="Claude Code commands that read your Moodle for you: deadlines, briefs, readings, grades. Read-only. Made for UCL.">
+<meta name="description" content="Commands for Claude Code and Codex (ChatGPT) that read your Moodle for you: deadlines, briefs, readings, grades. Read-only. Made for UCL.">
 <meta name="color-scheme" content="light dark">
 <style>
   :root {
@@ -153,15 +153,15 @@
   <main>
     <section class="hero" id="install">
       <div>
-        <h1>Ask Claude what's on your Moodle.</h1>
-        <p class="lede">A few commands for Claude Code that read Moodle for you: what's due, what a brief is actually asking for, and what to read before your next seminar. Read-only, built for UCL.</p>
+        <h1>Ask Claude or ChatGPT what's on your Moodle.</h1>
+        <p class="lede">A few commands for Claude Code or Codex that read Moodle for you: what's due, what a brief is actually asking for, and what to read before your next seminar. Read-only, built for UCL.</p>
 
-        <p class="install-label">Paste this into Claude Code</p>
+        <p class="install-label">Paste this into Claude Code or Codex</p>
         <div class="install-box">
           <pre id="prompt">Install https://github.com/Forrest404/read-moodle-skill for me. Read SETUP.md and follow it step by step.</pre>
           <button class="copy" type="button" id="copy">Copy</button>
         </div>
-        <p class="install-note">Needs a Mac and Claude Code. Claude does the setup; you log in to Moodle once. <span id="copied" aria-live="polite"></span></p>
+        <p class="install-note">Needs a Mac with Claude Code or Codex (OpenAI's coding app, which you sign in to with ChatGPT). It does the setup; you log in to Moodle once. <span id="copied" aria-live="polite"></span></p>
       </div>
 
       <figure style="margin:0">
@@ -195,7 +195,7 @@
 
     <section class="sec" aria-labelledby="h-cmds">
       <h2 id="h-cmds">Commands</h2>
-      <p>I made these because I was opening four module pages every week just to work out what was due and what to read. You can use the commands, or just ask in plain English, like "what do I need to read before Thursday?"</p>
+      <p>I made these because I was opening four module pages every week just to work out what was due and what to read. You can use the commands, or just ask in plain English, like "what do I need to read before Thursday?" In Codex, type <code>$</code> instead of <code>/</code>, for example <code>$today</code>.</p>
       <table class="cmds">
         <tr><td><code>/today</code></td><td>What's due, this week's sessions and readings, and new announcements.</td></tr>
         <tr><td><code>/deadlines</code></td><td>Everything due in the next two weeks, and whether it's submitted.</td></tr>
@@ -210,13 +210,13 @@
 
     <section class="sec" aria-labelledby="h-how">
       <h2 id="h-how">How it works</h2>
-      <p>Moodle has an API that its mobile app uses. During setup you log in once in your browser, and a small helper saves the key Moodle gives back. After that, a script on your Mac fetches your deadlines, pages and files, and Claude turns them into a proper answer.</p>
+      <p>Moodle has an API that its mobile app uses. During setup you log in once in your browser, and a small helper saves the key Moodle gives back. After that, a script on your Mac fetches your deadlines, pages and files, and Claude or ChatGPT turns them into a proper answer.</p>
       <div class="flow" aria-hidden="true">
         <div class="node"><b>Moodle</b><span>courses, briefs, grades</span></div>
         <div class="arrow">→</div>
         <div class="node"><b>Your Mac</b><span>moodle.py and your key in Keychain</span></div>
         <div class="arrow">→</div>
-        <div class="node"><b>Claude Code</b><span>reads it and answers you</span></div>
+        <div class="node"><b>Claude Code or Codex</b><span>reads it and answers you</span></div>
       </div>
       <p>It never sees your password, and the script refuses anything that would change something on Moodle. That's enforced in the code, not just in the instructions.</p>
     </section>
@@ -262,6 +262,7 @@
       <ol class="fine">
         <li>I've only tested it on UCL Moodle. Other Moodle sites may work if they allow the Moodle app.</li>
         <li>It's Mac only for now.</li>
+        <li>The normal ChatGPT chat can't run it, because it can't run anything on your Mac. Use Codex, which you sign in to with your ChatGPT account.</li>
         <li>If UCL turns off access for the Moodle app, this stops working too.</li>
       </ol>
     </section>

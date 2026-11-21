@@ -6,7 +6,9 @@ disable-model-invocation: true
 ---
 <!-- read-moodle-skill -->
 
-Follow `~/.claude/skills/read-moodle/SKILL.md` (read it if it isn't already in context). It lists the script commands and the Rules.
+If `$ARGUMENTS` appears below literally (Codex doesn't fill it in), use whatever the user typed after the command instead.
+
+Follow `{{SKILLS}}/read-moodle/SKILL.md` (read it if it isn't already in context). It lists the script commands and the Rules.
 
 Question: $ARGUMENTS
 

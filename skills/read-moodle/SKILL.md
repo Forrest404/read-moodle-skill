@@ -32,6 +32,7 @@ Settings (Moodle site, time zone, modules, term dates, optional Notion ids) are 
 
 ## When something fails
 
+- In Codex: `moodle.py` needs the network (to reach Moodle) and the macOS Keychain (for the key), which the sandbox blocks. If a command fails with a network error or "No Moodle key" straight after setup, run the same command again outside the sandbox (request escalated permissions) and let the user approve it.
 - "No Moodle key" or "key expired or revoked": tell the user to run `python3 -I {{DIR}}/moodle.py login` (it opens the browser; they log in and click Open). Don't try another route.
 - Anything else: run `doctor` and tell the user what it says.
 - Don't open Moodle in a browser to scrape it, and never ask for the user's password.

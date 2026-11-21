@@ -5,7 +5,7 @@ disable-model-invocation: true
 ---
 <!-- read-moodle-skill -->
 
-Follow the Rules in `~/.claude/skills/read-moodle/SKILL.md` (read it if it isn't already in context).
+Follow the Rules in `{{SKILLS}}/read-moodle/SKILL.md` (read it if it isn't already in context).
 
 1. Run `python3 -I {{DIR}}/moodle.py today`. If it errors, follow "When something fails" in the read-moodle skill.
 2. Read `{{DIR}}/config.json`. If `notion_timeline_db` is set and the Notion tools are available, also get from that database: Steps dated today, Steps before today with Done unticked (overdue), and Steps in the next 3 days.
