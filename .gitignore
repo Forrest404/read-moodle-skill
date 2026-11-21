@@ -1,0 +1,6 @@
+config.json
+files/
+__pycache__/
+plan.json
+plan.ics
+.DS_Store

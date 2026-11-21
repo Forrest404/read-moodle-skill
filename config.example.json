@@ -1,0 +1,19 @@
+{
+  "site": "https://moodle.ucl.ac.uk",
+  "timezone": "Europe/London",
+  "modules": [],
+  "terms": [
+    [
+      "Term 1",
+      "2026-10-05"
+    ],
+    [
+      "Term 2",
+      "2027-01-11"
+    ]
+  ],
+  "weeks_per_term": 11,
+  "reading_week": 6,
+  "notion_today_page": null,
+  "notion_timeline_db": null
+}
