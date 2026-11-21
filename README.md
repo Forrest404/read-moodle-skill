@@ -1,6 +1,6 @@
 # read moodle skill
 
-Website: https://forrest404.github.io/read-moodle-skill/
+Website: https://readmoodle.github.io
 
 Ask your AI agent about your Moodle: what's due, what an assignment actually asks for, this week's readings, your grades and feedback. It can also write you a daily briefing and turn your deadlines into a plan in your calendar.
 
