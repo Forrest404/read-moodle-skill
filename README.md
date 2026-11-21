@@ -2,7 +2,7 @@
 
 Website: https://forrest404.github.io/read-moodle-skill/
 
-Ask Claude or ChatGPT about your Moodle: what's due, what an assignment actually asks for, this week's readings, your grades and feedback. It can also write you a daily briefing and turn your deadlines into a plan in your calendar.
+Ask your AI agent about your Moodle: what's due, what an assignment actually asks for, this week's readings, your grades and feedback. It can also write you a daily briefing and turn your deadlines into a plan in your calendar.
 
 It reads Moodle through Moodle's own API (the same one the official Moodle app uses), so there's no browser automation. It only reads: it can't submit, post or change anything.
 
@@ -10,7 +10,7 @@ Built for UCL Moodle. It should work with other universities' Moodle sites if th
 
 ## Install
 
-You need a Mac and either [Claude Code](https://claude.com/claude-code) or [Codex](https://developers.openai.com/codex) (OpenAI's coding app, which you sign in to with ChatGPT). Open it and paste:
+You need a Mac and an AI agent that can run commands on it, such as [Claude Code](https://claude.com/claude-code) or [Codex](https://developers.openai.com/codex). Open your agent and paste:
 
 ```
 Install https://github.com/Forrest404/read-moodle-skill for me. Read SETUP.md and follow it step by step.
@@ -21,9 +21,9 @@ It does the setup. You'll be asked to:
 2. pick your modules from a list and confirm your term dates;
 3. optionally, connect Notion.
 
-Takes about five minutes. Restart the app afterwards so the commands show up.
+Takes about five minutes. Restart your agent afterwards so the commands show up.
 
-The normal ChatGPT chat can't run this, because it can't run anything on your Mac. Codex can. In Codex, the setup asks you to approve a few commands, because they need the internet or your Keychain.
+Chat apps like the ChatGPT or Claude websites can't run this, because they can't run anything on your Mac. Some agents, such as Codex, will ask you to approve a few setup commands because they need the internet or your Keychain.
 
 ## Commands
 
@@ -38,7 +38,7 @@ The normal ChatGPT chat can't run this, because it can't run anything on your Ma
 | `/plan` | Breaks your deadlines into steps and adds them to your calendar (and Notion, if connected) |
 | `/ask <question>` | Anything else on Moodle |
 
-These are the Claude Code names. In Codex, type `$` instead of `/`, e.g. `$today` or `$brief case study`.
+Some agents start commands with `$` instead of `/`, e.g. `$today` or `$brief case study` in Codex.
 
 You can also just ask in normal words, e.g. "what do I need to read for Thursday?"
 
@@ -46,7 +46,7 @@ You can also just ask in normal words, e.g. "what do I need to read for Thursday
 
 - `moodle.py` calls Moodle's web-service API with your own key. It refuses any API function that could change something (submit, save, post, update, delete and so on).
 - The key comes from Moodle's app sign-in. A small helper, `MoodleKey.app`, is built on your Mac during install. When you click Open, it catches the key and saves it in your macOS Keychain. The key is never shown, logged, or sent anywhere except your Moodle site.
-- The skills tell the AI how to use it. They go in `~/.claude/skills/` for Claude Code and `~/.agents/skills/` for Codex.
+- The skills tell your agent how to use it. They go in your agent's skills folder (`~/.claude/skills/` for Claude Code, `~/.agents/skills/` for Codex).
 - Your settings (Moodle site, modules, term dates) are in `config.json` in the install folder.
 - Downloaded briefs and slides go in `files/` in the install folder.
 
@@ -54,7 +54,7 @@ If you open `https://moodle.ucl.ac.uk/webservice/rest/server.php` in a browser, 
 
 ## Privacy
 
-Everything runs on your Mac. Moodle data goes to Claude or ChatGPT only when you ask a question, the same as anything else you ask them. Notion is only used if you connect it.
+Everything runs on your Mac. Moodle data goes to your AI agent only when you ask a question, the same as anything else you ask it. Notion is only used if you connect it.
 
 ## Problems
 
@@ -76,7 +76,7 @@ cd ~/read-moodle-skill && git pull && ./install.sh
 ~/read-moodle-skill/uninstall.sh && rm -rf ~/read-moodle-skill
 ```
 
-This removes the skills (for Claude Code and Codex), MoodleKey.app and the key in Keychain. If the installer moved any skills of your own aside, they're in `~/read-moodle-skill/backups/`: move them back before deleting the folder. You can also revoke the key in Moodle under Preferences → Security keys, if your site shows it.
+This removes the skills from your agent, MoodleKey.app and the key in Keychain. If the installer moved any skills of your own aside, they're in `~/read-moodle-skill/backups/`: move them back before deleting the folder. You can also revoke the key in Moodle under Preferences → Security keys, if your site shows it.
 
 ---
 
