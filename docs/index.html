@@ -4,283 +4,118 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>read moodle skill</title>
-<meta name="description" content="Ask Claude about your Moodle: deadlines, briefs, readings, grades. Read-only, through the Moodle API. Built for UCL.">
+<meta name="description" content="A few Claude Code commands that read your Moodle for you: deadlines, briefs, readings, grades. Made for UCL.">
 <meta name="color-scheme" content="light dark">
 <style>
-  :root {
-    --bg: #f6f4ee;
-    --surface: #fffdf8;
-    --text: #1d1c19;
-    --muted: #686358;
-    --line: #e3ddd1;
-    --accent: #2f5e4e;
-    --accent-text: #ffffff;
-    --accent-soft: #e6eee9;
-    --code-bg: #efece4;
-    --term-bg: #1c1d1b;
-    --term-text: #e9e7e0;
-    --term-muted: #8f8b80;
-    --term-accent: #9fd0b9;
-    --shadow: 0 1px 2px rgba(29, 28, 25, .04), 0 8px 24px rgba(29, 28, 25, .06);
-    --serif: ui-serif, "New York", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  }
+  :root { --bg: #fdfcf9; --text: #222; --muted: #666; --link: #1a4f8b; --rule: #ddd; --pre: #f3f1ec; }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #131412;
-      --surface: #1b1c1a;
-      --text: #ebe9e3;
-      --muted: #a29e94;
-      --line: #2d2e2b;
-      --accent: #9fd0b9;
-      --accent-text: #10201a;
-      --accent-soft: #1f2a25;
-      --code-bg: #242522;
-      --term-bg: #0e0f0e;
-      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
-    }
+    :root { --bg: #1a1a1a; --text: #e2e2e2; --muted: #999; --link: #8ab4e8; --rule: #383838; --pre: #242424; }
   }
-
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.65 var(--sans); -webkit-font-smoothing: antialiased;
+    background: var(--bg); color: var(--text); margin: 0;
+    font: 18px/1.6 Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
   }
-  a { color: var(--text); text-decoration-color: var(--line); text-underline-offset: 3px; transition: text-decoration-color .15s; }
-  a:hover { text-decoration-color: currentColor; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-  code { font: .86em/1.5 var(--mono); background: var(--code-bg); padding: .12em .4em; border-radius: 5px; overflow-wrap: anywhere; }
-
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
-  section { padding: 56px 0; border-top: 1px solid var(--line); }
-  h2 {
-    font: 500 26px/1.25 var(--serif); letter-spacing: -.01em; margin: 0 0 8px;
-  }
-  .sub { color: var(--muted); margin: 0 0 28px; }
-
-  /* hero */
-  header { padding: 96px 0 64px; }
-  .eyebrow {
-    display: inline-block; font-size: 13px; letter-spacing: .02em; color: var(--accent);
-    background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 24px;
-  }
-  h1 {
-    font: 500 clamp(40px, 7vw, 60px)/1.05 var(--serif); letter-spacing: -.02em; margin: 0 0 20px;
-  }
-  .lead { font-size: 20px; line-height: 1.55; color: var(--muted); max-width: 34em; margin: 0 0 40px; }
-
-  .prompt {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
-    padding: 20px; display: grid; gap: 16px;
-  }
-  .prompt-label { font-size: 13px; color: var(--muted); margin: 0; }
-  .prompt pre {
-    margin: 0; font: 15px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere;
-  }
-  .prompt-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .meta { font-size: 14px; color: var(--muted); margin: 0; }
-  .btn {
-    font: 500 15px/1 var(--sans); cursor: pointer; border: 0; border-radius: 10px;
-    background: var(--accent); color: var(--accent-text); padding: 0 18px; min-height: 44px;
-    display: inline-flex; align-items: center; gap: 8px; transition: transform .15s ease-out, opacity .15s;
-  }
-  .btn:hover { opacity: .92; }
-  .btn:active { transform: scale(.97); }
-  .btn svg { width: 16px; height: 16px; }
-
-  /* preview */
-  .term {
-    margin-top: 48px; background: var(--term-bg); color: var(--term-text); border-radius: 14px;
-    box-shadow: var(--shadow); overflow: hidden; font: 13.5px/1.7 var(--mono);
-  }
-  .term-bar { display: flex; gap: 6px; padding: 12px 16px; border-bottom: 1px solid rgba(255, 255, 255, .07); }
-  .term-bar span { width: 10px; height: 10px; border-radius: 50%; background: #3a3b38; }
-  .term-body { padding: 16px 20px 20px; overflow-x: auto; }
-  .term-body p { margin: 0; white-space: pre; }
-  .t-you { color: var(--term-accent); }
-  .t-mute { color: var(--term-muted); }
-  .t-bold { color: #fff; font-weight: 600; }
-  .caption { font-size: 13px; color: var(--muted); margin: 10px 0 0; text-align: center; }
-
-  /* steps */
-  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); counter-reset: s; }
-  .steps li {
-    counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px;
-  }
-  .steps li::before {
-    content: counter(s); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent); font: 600 14px/1 var(--sans); margin-bottom: 12px;
-  }
-  .steps strong { display: block; font-weight: 600; margin-bottom: 4px; }
-  .steps span { display: block; color: var(--muted); font-size: 15px; line-height: 1.55; }
-
-  /* commands */
-  .cmds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px; margin: 0; }
-  .cmd { padding: 16px 0; border-top: 1px solid var(--line); }
-  .cmd dt { font: 500 14.5px/1.4 var(--mono); color: var(--accent); margin-bottom: 4px; }
-  .cmd dd { margin: 0; color: var(--muted); font-size: 15.5px; line-height: 1.55; }
-
-  /* access */
-  .cards { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
-  .card h3 { display: flex; align-items: center; gap: 8px; font: 600 16px/1.3 var(--sans); margin: 0 0 10px; }
-  .card h3 svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
-  .card p, .card li { color: var(--muted); font-size: 15px; line-height: 1.55; }
-  .card p { margin: 0; }
-  .card ul { margin: 0; padding-left: 18px; }
-  .card li { margin-bottom: 6px; }
-  .note { margin: 20px 0 0; color: var(--muted); font-size: 15.5px; }
-
-  /* help */
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  .two h3 { font: 600 16px/1.3 var(--sans); margin: 0 0 8px; }
-  .two p { margin: 0 0 10px; color: var(--muted); font-size: 15.5px; }
-
-  footer { border-top: 1px solid var(--line); padding: 32px 0 56px; font-size: 14px; color: var(--muted); }
-  footer a { color: var(--muted); }
-
-  @media (max-width: 700px) {
-    body { font-size: 16px; }
-    .wrap { padding: 0 16px; }
-    header { padding: 56px 0 40px; }
-    .lead { font-size: 18px; }
-    section { padding: 44px 0; }
-    .steps, .cards, .cmds, .two { grid-template-columns: 1fr; }
-    .btn { width: 100%; justify-content: center; }
-    .term { font-size: 11.5px; }
-    .term-body { padding: 14px 14px 16px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-  }
+  main { max-width: 36em; margin: 0 auto; padding: 48px 20px 80px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 20px; margin: 40px 0 8px; }
+  p, ul, ol { margin: 0 0 14px; }
+  li { margin-bottom: 4px; }
+  a { color: var(--link); }
+  .byline { color: var(--muted); margin-bottom: 28px; }
+  code, pre { font-family: Menlo, Consolas, monospace; font-size: 15px; }
+  code { overflow-wrap: anywhere; }
+  pre { background: var(--pre); padding: 12px 14px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 0 0 14px; }
+  pre.out { white-space: pre; overflow-x: auto; overflow-wrap: normal; font-size: 13px; }
+  .copy { font: inherit; font-size: 15px; color: var(--link); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0 16px; }
+  footer { color: var(--muted); font-size: 15px; }
+  @media (max-width: 480px) { body { font-size: 17px; } main { padding-top: 32px; } }
 </style>
 </head>
 <body>
+<main>
 
-<div class="wrap">
-  <header>
-    <span class="eyebrow">For UCL students · Claude Code on Mac</span>
-    <h1>Ask Claude about your Moodle.</h1>
-    <p class="lead">What's due, what an assignment actually asks for, this week's readings, your grades and feedback. Read-only, straight from Moodle's API.</p>
+<h1>read moodle skill</h1>
+<p class="byline">by <a href="https://github.com/Forrest404">Forrest</a> · November 2026</p>
 
-    <div class="prompt">
-      <p class="prompt-label">Paste this into Claude Code</p>
-      <pre id="prompt">Install https://github.com/Forrest404/read-moodle-skill for me. Read SETUP.md and follow it step by step.</pre>
-      <div class="prompt-foot">
-        <p class="meta">About five minutes · free · nothing to sign up for</p>
-        <button class="btn" type="button" id="copy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-          <span>Copy prompt</span>
-        </button>
-      </div>
-      <span id="status" class="meta" role="status" aria-live="polite" style="position:absolute;left:-9999px"></span>
-    </div>
+<p>I got tired of clicking through four Moodle modules every week to find out what was due and what I was meant to read, so I wrote a few commands for <a href="https://claude.com/claude-code">Claude Code</a> that do it for me. Now I type <code>/deadlines</code> or ask "what's the brief for the case study?" and it reads Moodle and tells me.</p>
 
-    <div class="term" role="img" aria-label="Example: typing /deadlines in Claude Code lists upcoming deadlines with their status.">
-      <div class="term-bar"><span></span><span></span><span></span></div>
-      <div class="term-body">
-<p><span class="t-you">&gt;</span> /deadlines 30</p>
-<p> </p>
-<p><span class="t-bold">Mon 23 Nov</span>  <span class="t-mute">23:59 · in 2 days</span></p>
-<p>  MEDI0001  Modelling task   <span class="t-bold">not submitted</span></p>
-<p> </p>
-<p><span class="t-bold">Mon 14 Dec</span>  <span class="t-mute">13:00 · in 23 days</span></p>
-<p>  MEDI0001  Portfolio (50%)  <span class="t-mute">not submitted</span></p>
-<p>  MEDI0004  Case study (40%) <span class="t-mute">not submitted</span></p>
-<p> </p>
-<p><span class="t-mute">3 deadlines in 30 days. Nearest: Monday.</span></p>
-      </div>
-    </div>
-    <p class="caption">Example output. Your own modules and dates will show here.</p>
-  </header>
+<p>It only reads. It can't submit, post or change anything on Moodle. That's enforced in the code, not just written in the instructions.</p>
 
-  <section aria-labelledby="h-steps">
-    <h2 id="h-steps">Setting up</h2>
-    <p class="sub">Claude does the installing. You only do three things.</p>
-    <ol class="steps">
-      <li><strong>Log in to Moodle</strong><span>Your browser opens Moodle. Log in as usual, then click Open when it asks to open MoodleKey.</span></li>
-      <li><strong>Pick your modules</strong><span>Choose them from a list and confirm your term dates.</span></li>
-      <li><strong>Restart Claude Code</strong><span>The commands appear. Connecting Notion is optional.</span></li>
-    </ol>
-  </section>
+<h2>Installing it</h2>
 
-  <section aria-labelledby="h-cmds">
-    <h2 id="h-cmds">What you can ask</h2>
-    <p class="sub">Type a command, or just ask in normal words, like "what do I need to read for Thursday?"</p>
-    <dl class="cmds">
-      <div class="cmd"><dt>/today</dt><dd>A short daily briefing: what's due, what to do today, this week's sessions and readings, new announcements.</dd></div>
-      <div class="cmd"><dt>/brief &lt;assignment&gt;</dt><dd>Reads the brief, attachments and marking criteria, and tells you what you actually have to do.</dd></div>
-      <div class="cmd"><dt>/deadlines [days]</dt><dd>Everything due in the next 14 days, submitted or not.</dd></div>
-      <div class="cmd"><dt>/plan</dt><dd>Breaks your deadlines into steps and adds them to your calendar. It asks before adding anything.</dd></div>
-      <div class="cmd"><dt>/module &lt;code&gt; [week]</dt><dd>A module's week: sessions, slides, readings, announcements.</dd></div>
-      <div class="cmd"><dt>/grades [module]</dt><dd>Grades, with a short summary of written feedback.</dd></div>
-      <div class="cmd"><dt>/assignments [module]</dt><dd>All assignments with due dates, status and grades.</dd></div>
-      <div class="cmd"><dt>/ask &lt;question&gt;</dt><dd>Anything else on Moodle.</dd></div>
-    </dl>
-  </section>
+<p>You need a Mac with Claude Code. Paste this into Claude Code and it will set everything up:</p>
 
-  <section aria-labelledby="h-access">
-    <h2 id="h-access">What it can see and change</h2>
-    <p class="sub">It reads Moodle the same way the official Moodle app does, using your own key.</p>
-    <div class="cards">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Reads</h3>
-        <p>Your courses, deadlines, assignment briefs and files, week pages and readings, announcements, submission status, grades and feedback.</p>
-      </div>
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>Never</h3>
-        <p>Submits, uploads, posts, replies or changes settings on Moodle. Any Moodle function that could change something is refused. It never asks for or sees your password.</p>
-      </div>
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg>Adds to your Mac</h3>
-        <ul>
-          <li><code>~/read-moodle-skill</code>, with your settings and downloaded briefs</li>
-          <li>the commands, in <code>~/.claude/skills</code></li>
-          <li><code>MoodleKey.app</code>, a small helper built on your Mac</li>
-          <li>your Moodle key, in Keychain</li>
-        </ul>
-      </div>
-    </div>
-    <p class="note">Only if you choose: a Notion page for <code>/today</code>, a Notion database for <code>/plan</code>, and calendar events you import. No servers, accounts or tracking. Moodle data goes to Claude only when you ask something.</p>
-  </section>
+<pre id="prompt">Install https://github.com/Forrest404/read-moodle-skill for me. Read SETUP.md and follow it step by step.</pre>
+<p><button class="copy" type="button" id="copy">copy that</button> <span id="copied" aria-live="polite"></span></p>
 
-  <section aria-labelledby="h-help">
-    <h2 id="h-help">Help</h2>
-    <div class="two">
-      <div>
-        <h3>If something breaks</h3>
-        <p>Run <code>python3 -I ~/read-moodle-skill/moodle.py doctor</code>. It checks each part and says how to fix it.</p>
-        <p>If your key stops working, for example after a password change, run the same command with <code>login</code> instead of <code>doctor</code>.</p>
-      </div>
-      <div>
-        <h3>Update or remove</h3>
-        <p>Update: <code>cd ~/read-moodle-skill &amp;&amp; git pull &amp;&amp; ./install.sh</code></p>
-        <p>Remove: <code>~/read-moodle-skill/uninstall.sh &amp;&amp; rm -rf ~/read-moodle-skill</code></p>
-      </div>
-    </div>
-  </section>
+<p>During setup your browser opens Moodle. Log in like you normally would, and when it asks to open "MoodleKey", click Open. That's how it gets read access to your account. Then Claude asks which of your courses are actual modules and checks your term dates with you. It took me about five minutes. Restart Claude Code at the end and the commands are there.</p>
 
-  <footer>
-    <a href="https://github.com/Forrest404/read-moodle-skill">Source on GitHub</a> · MIT licence · Built for UCL Moodle; other Moodle sites may work if they allow the Moodle app. Not affiliated with or endorsed by UCL or Moodle.
-  </footer>
-</div>
+<h2>What you can do with it</h2>
 
+<ul>
+  <li><code>/today</code>: what's due soon, this week's sessions and readings, and any new announcements</li>
+  <li><code>/deadlines</code>: everything due in the next two weeks, and whether you've submitted it</li>
+  <li><code>/brief case study</code>: reads the assignment brief and marking criteria and explains what you actually have to hand in</li>
+  <li><code>/module MEDI0001 week 7</code>: one module's week, with slides and readings</li>
+  <li><code>/grades</code>: your marks and a summary of the feedback</li>
+  <li><code>/plan</code>: breaks your deadlines into smaller steps and puts them in your calendar (it shows you the plan first)</li>
+  <li><code>/assignments</code> and <code>/ask</code> for anything else</li>
+</ul>
+
+<p>You don't have to use the commands. Asking "what do I need to read before Thursday's seminar?" works too.</p>
+
+<p>This is roughly what <code>/deadlines</code> gets back from Moodle before Claude tidies it up (module names changed, links cut):</p>
+
+<pre class="out">Deadlines in the next 14 days:
+- Mon 23 Nov 23:56 (in 2 days) | MEDI0001 | Short film | not submitted
+- Fri 04 Dec 13:00 (in 13 days) | MEDI0003 | Proposal | submitted</pre>
+
+<h2>What it touches</h2>
+
+<p>It uses Moodle's web-service API, the same one the official Moodle app uses, with a key tied to your account. It never sees your password. On your Mac it adds:</p>
+
+<ul>
+  <li>a folder at <code>~/read-moodle-skill</code> with the code, your settings and any briefs it downloads</li>
+  <li>the commands, in <code>~/.claude/skills</code></li>
+  <li>a tiny app called MoodleKey that catches the key when you log in (built on your Mac during install)</li>
+  <li>the key itself, in your Keychain</li>
+</ul>
+
+<p>If you connect Notion during setup, <code>/today</code> can write to one Notion page and <code>/plan</code> can add rows to one database. Apart from that, the only things that leave your Mac are the requests to Moodle and whatever you ask Claude anyway.</p>
+
+<h2>Things to know</h2>
+
+<ul>
+  <li>I've only tested it on UCL Moodle. Other universities' Moodle sites might work if they allow the Moodle app.</li>
+  <li>Mac only for now.</li>
+  <li>If UCL ever switches off access for the Moodle app, this stops working too.</li>
+  <li>Some coursework is handed in on Turnitin or other systems, so "not submitted" on Moodle doesn't always mean you missed it.</li>
+  <li>Opening <code>moodle.ucl.ac.uk/webservice/rest/server.php</code> in a browser shows "invalid token". That's normal. It's an address for programs, not a page.</li>
+</ul>
+
+<h2>If it breaks</h2>
+
+<p>Run <code>python3 -I ~/read-moodle-skill/moodle.py doctor</code>. It checks each piece and tells you what to fix. If your key stops working (after a password change, say), run it again with <code>login</code> instead of <code>doctor</code>.</p>
+
+<p>To update: <code>cd ~/read-moodle-skill &amp;&amp; git pull &amp;&amp; ./install.sh</code><br>
+To remove it: <code>~/read-moodle-skill/uninstall.sh</code>, then delete the folder.</p>
+
+<p>Bugs and ideas go on <a href="https://github.com/Forrest404/read-moodle-skill/issues">GitHub issues</a>. All the code is on <a href="https://github.com/Forrest404/read-moodle-skill">GitHub</a> too, if you'd rather read it before running it. You should.</p>
+
+<hr>
+<footer>MIT licence. Not made by, or connected to, UCL or Moodle.</footer>
+
+</main>
 <script>
-  (function () {
-    var btn = document.getElementById("copy"), label = btn.querySelector("span"), status = document.getElementById("status");
-    btn.addEventListener("click", function () {
-      var text = document.getElementById("prompt").textContent;
-      function done(ok) {
-        label.textContent = ok ? "Copied" : "Select and copy";
-        status.textContent = ok ? "Prompt copied to clipboard." : "Couldn't copy. Select the text and copy it.";
-        setTimeout(function () { label.textContent = "Copy prompt"; }, 1600);
-      }
-      if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
-      else done(false);
-    });
-  })();
+  document.getElementById("copy").addEventListener("click", function () {
+    var t = document.getElementById("prompt").textContent, note = document.getElementById("copied");
+    if (!navigator.clipboard) { note.textContent = "(select it and copy)"; return; }
+    navigator.clipboard.writeText(t).then(function () {
+      note.textContent = "copied";
+      setTimeout(function () { note.textContent = ""; }, 1500);
+    }, function () { note.textContent = "(select it and copy)"; });
+  });
 </script>
 </body>
 </html>
